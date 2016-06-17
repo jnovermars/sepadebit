@@ -44,24 +44,46 @@
 
 /**
  *
- * Create Autoloader
+ * Create Auto Loader
  *
- * @input $class (string) -> a valide class name
- * @return none
+ * @param string $class -> a valide class name
+ * @return bool
  * 
  */
 
-function classAutoLoader($class){
-    $class = strtolower($class);
-    $classFile = $_SERVER['DOCUMENT_ROOT'].'/tweakers/tutorial_2/includes/'.$class.'.class.php';
-    if(is_file($classFile)&&!class_exists($class)) {
-        include $classFile;
+function classAutoLoader($class) {
+    if(class_exists($class)) {
+        return false;
     }
+
+    // Relative include
+    $classFile = $class.'.class.php';
+    if(file_exists($classFile)) {
+        include $classFile;
+        return true;
+    }
+
+    // Absolute include
+    $classFile = dirname(__DIR__).'/includes/'.$class.'.class.php';
+    if(file_exists($classFile)) {
+        include $classFile;
+        return true;
+    }
+
+    // Dynamic include
+    $classFile = $_SERVER['DOCUMENT_ROOT'].'/includes/'.$class.'.class.php';
+    if(file_exists($classFile)) {
+        include $classFile;
+        return true;
+    }
+    return false;
 }
+
+
 
 /**
  * 
- * Set autoloader as default 
+ * Register Auto Loader as new Auto loader
  * 
  */
 
